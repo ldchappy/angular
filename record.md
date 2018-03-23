@@ -128,8 +128,67 @@ imports描述该模块有哪些依赖
 bootstrap指向谁为顶层组件
 
 
+### typeScript
+typeScript包含了ES6包含了ES5
 
+typeScript相对与ES5有五大改善
+类型、类、注解、模块导入、语言工具包(如，解构)
 
+#### 类型
+因typeScript从ES5演化来的，so，ts仍可以使用var来定义变量
+也提供可选的变量类型：
+var name : string; -->var 变量名 ： 规定类型
+在声明函数时，也可为函数的参数和返回值指定类型：
+function greetText(name:string):string{
+  return 'hello' + name;
+}
+这里的name参数传入来的参数只能为string类型
+：string{ 指定返回值类型
+
+#### ts内置类型
+string  字符串 --> var name:string = 'Felipe';
+number  数字(任何类型数字)---> var age:number = 30;
+boolean 布尔类型 --> var marred:boolean = true;
+Array   数组类型(一组相同数据的集合)，so，还要指定一种类型
+  使用Array<type> or type[]来为数组条目指定元素类型
+  var jobs:Array<string> = ['aa','ss','dd','ff'];
+  var jobs:string[] = ['aa','ss','dd','ff'];
+  数字型数组类似
+  var jobs:Array<number> = [1，2，3，4，5，6];
+  var jobs:number[] = [1，2，3，4，5，6];
+
+枚举类型
+  是一组可命名数值的集合，如，想拿到某人的一系列角色
+  enum Role{Employee,Manager,Admin}
+  var role:Role = Role.Employee;
+
+  默认下，初始值为0，可调整初始化值的范围
+  enum Role {Employee = 3,Manager,Admin};
+  var role:Role = Role.Employee;
+  这里的初始值为3，而其他项会依次递增
+
+  同样的，也可以为每一项指定值
+  enum Role {Employee = 3,Manager=6,Admin=9};
+  var role:Role = Role.Employee;
+
+任意类型
+  在ts中，没有指定类型，默认为any，any的变量可接收任意类型的数据
+  var something:any = 'string';
+  something = 123;
+  something = [1,2,3]
+
+无类型
+  void意味我们不期望那里有类型。常用于作函数的返回值，表示没有任何返回值：
+  function setName(name:string ):void{
+    this.name = name;
+  }
+
+类
+  ES5中不使用类，而是依赖与原型
+  用class关键字定义类
+  class venicle{}   类可以包含属性、方法、构造函数
+
+属性
 
 
 
