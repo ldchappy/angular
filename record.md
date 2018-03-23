@@ -98,16 +98,34 @@ export class UserItemComponent implements OnInit {
 }
 3.配置UserListComponent的模板来把用户名传给UserItemComponent
 <ul>
-  <app-user-item *ngFor="let li2 of name2" [name2]="asdf">hello {{li2}}</app-user-item>
+  <app-user-item *ngFor="let li2 of name2" [name2]="li2">hello {{li2}}</app-user-item>
 </ul>
 这里的[name2]是@Input()后的名称
+user-item.component.html里写上{{name2}}
 
+###总结子父组件传值：
+父：
+1.写上子组件生成的新标签 可加属性[循环数组名]="循环变量名"
+子：
+ts文件
+1.导入Input依赖 2.定义变量加前缀@Input,并去掉construtor里的有关变量的内容
+html文件
+1、写上变量
 
+###启动原理
+angular-cli.json指定main.ts
+main.ts是入口点，引导bootstrap我们的引用
+引导过程中会引导一个Angular模块
+我们使用AppModule来引导该引用，在app.module.ts中指定
+AppModule指定了将那个模块用作顶层组件，这里是AppConponent
+AppConponent有一个<app-user-list>渲染出来
 
-
-
-
-
+###NgModule模块
+这是个指引者的角色，指向要加载的组件
+三个属性:declarations、imports、bootstrap
+declarations指定组件
+imports描述该模块有哪些依赖
+bootstrap指向谁为顶层组件
 
 
 
