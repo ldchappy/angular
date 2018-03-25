@@ -1,0 +1,24 @@
+<div class="four">
+    <div class="ui">
+        <div class="value">
+        <!-- {{votes}} 使用新类启用下面的表示-->
+        {{article.votes}}
+        </div>
+        <div class="label">Points</div>
+    </div>
+</div>
+<div class="twelve">
+    <a href="{{article.link}}">{{article.title}}</a>
+    <ul>
+        <li>
+            <a href (click)="voteUp()">
+                upvote
+            </a>
+        </li>
+        <li>
+            <a href (click)="voteDown()">
+                downvote
+            </a>
+        </li>
+    </ul>
+</div>

@@ -127,6 +127,11 @@ declarations指定组件
 imports描述该模块有哪些依赖
 bootstrap指向谁为顶层组件
 
+###新建组件
+ng generate component xxx
+
+### 这是？？
+declare var jQuery: any;
 
 ### typeScript
 typeScript包含了ES6包含了ES5
