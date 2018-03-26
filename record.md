@@ -133,6 +133,7 @@ ng generate component xxx
 ### 这是？？
 declare var jQuery: any;
 
+##讲解ts
 ### typeScript
 typeScript包含了ES6包含了ES5
 
@@ -194,6 +195,104 @@ Array   数组类型(一组相同数据的集合)，so，还要指定一种类�
   class venicle{}   类可以包含属性、方法、构造函数
 
 属性
+定义了类实例对象的数据，如
+Person类的声明是这样的：
+Person{
+  first_name:string;
+  last_name:string;
+  age:number;
+}
+
+方法
+运行在类对象实例上下文中的函数，在调用对象的方法之前，必须要有这个对象的实例
+**要实例化一个类，使用new关键字
+如我们希望问候某个Person，可这样：
+class Person{
+  first_name:string ;
+  lastP_name:string ;
+  age:number;
+
+  greet(){
+    console.log('hello',this.first_name);
+  }
+}
+
+注：借助this关键字，能用this.first_name表达式来访问Person类的first_name属性
+调用greet方法之前，要有Person类的实例对象
+var p:Person = new Person();
+p.first_name = 'Felipe';
+p.greet();
+
+### 构造函数
+是当类进行实例化时执行的特殊函数。常用与对新对象进行初始化
+**构造函数必须命名为constructor
+**可有输入参数，但不能有任何返回值
+**要通过调用new ClassName()来执行构造函数，以完成类的实例化
+
+当类没有显式定义构造函数时，将自动创建一个无参构造函数
+class Vehicle{};
+var v = new Vehicle();
+等价于：
+class Vehicle{construcotr(){}}
+var v = new Vehicle();
+
+可以使用带参数的构造函数来将对象的创建工作参数化
+class Person{
+  first_name:string ;
+  lastP_name:string ;
+  age:number;
+
+  constructor(first_name:string,lastP_name:string,age:number){
+    this.first_name = first_name;
+    this.lastP_name = last_name;
+    this.age = age;
+  }
+
+  greet(){
+    console.log('hello',this.first_name);
+  }
+}
+
+继承
+表明子类能从父类中得到的行为，可已在子类中重写、修改或添加行为
+继承用extends关键字实现
+
+### => 是函数的一种书写简洁语法
+guiters.forEach(function(g){
+  console.log(sele.name+'g')
+})
+
+---->
+guiters.forEach((g)==>{
+  console.log(sele.name+'g')
+})
+看着 =>  <==> function{}
+
+### 模板字符串
+** 可在模板字符串中使用变量(不必使用+来拼接字符串)
+** 支持多行字符串
+
+1.字符串中的变量，也叫字符串插值
+var firstName = 'Nate';
+var lastName = 'Murrey';
+
+var greeting = `Hello ${firstName} ${lastName}`
+** 要是用反引号
+
+2.多行字符串
+反引号字符串可多行文本
+var template= `
+<li class="">
+  <div class="num">2</div><div class="lab mar_right">赵*</div>
+    <div class="dat">￥1,530,900.00</div>
+</li>
+`
+
+
+
+
+
+
 
 
 
