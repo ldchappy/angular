@@ -288,8 +288,25 @@ var template= `
 </li>
 `
 
+## angular的工作原理
+一个概念：angular是由组件构成的
+一个清楚：不要求使用指定的数据模型库
 
+### 组件：构成angular应用的基本组成部分
+每个组件有三个部分组成：
+组件注解、视图、控制器
 
+@Component({
+  selector:'inventory-app',
+  template:`
+    <div class="inventory-app">
+      (Products will go here soon)  
+    </div>
+  `
+})
+class InventoryApp{
+  //.....
+}
 
 
 
