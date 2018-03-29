@@ -308,20 +308,177 @@ class InventoryApp{
   //.....
 }
 
+@Component注解明确了
+selector(选择器)用来告诉angular要匹配那个HTML元素
+template(模板)用来定义视图
+
+### 组件注解
+selector配置的可作为元素标签：<inventory-app></inventory-app>
+可作为属性：<div inventory-app></div>
+
+template--> 组件中可视部分
+@Component({
+  selector: 'inventory-app',
+  template: `
+  <div class="inventory-app">
+  (Products will go here soon)
+  </div>
+  `
+})
+
+### 输入与输出
+<products-list
+  [productList]="products" <!-- input -->
+  (onProductSelected)="productWasSelected($event)"> <!-- output -->
+</products-list>
+** 方括号[]用来传递输入，圆括号()用来处理输出
+
+圆括号处理输出
+在Angular中，使用输出来将数据传递出组件。
+(onProductSelected)，即=号左边是我们要监听的输出的名称；
+"productWasSelected"，即=号右边是当有新的输入时我们想要调用的方法；
+$event在这里是一个特殊的变量，用来表示输出的内容。
+
+
+## angular内置指令
+###ngIf：根据一个条件来决定显示或隐藏一个元素
+<div *ngIf="a > b"></div> <!-- displayed if a is more than b -->
+<div *ngIf="str == 'yes'"></div> <!-- displayed if str holds the string "yes" -->
+
+###ngSwitch:根据一个给定的条件来渲染不同的元素
+<div class="ui raised segment">
+  <ul [ngSwitch]="choice">
+  <li *ngSwitchCase="1">First choice</li>
+  <li *ngSwitchCase="2">Second choice</li>
+  <li *ngSwitchCase="3">Third choice</li>
+  <li *ngSwitchCase="4">Fourth choice</li>
+  <li *ngSwitchCase="2">Second choice, again</li>
+  <li *ngSwitchDefault>Default choice</li>
+</ul>
+</div>
+
+###ngStyle:通过angular表达式给特定的DOM元素设定CSS属性
+<div [style.background-color]="'yellow'">
+  Uses fixed yellow background
+</div>
+另一种：
+<div [ngStyle]="{color: 'white', 'background-color': 'blue'}">
+  Uses fixed white text on blue background
+</div>
+
+** ngStyle真正的能力在于使用动态值
+在这个例子中，我们定义了两个输入框。
+<div class="ui input">
+  <input type="text" name="color" value="{{color}}" #colorinput>
+</div>
+<div class="ui input">
+  <input type="text" name="fontSize" value="{{fontSize}}" #fontinput>
+</div>
+<button class="ui primary button" (click)="apply(colorinput.value, fontinput\
+.value)">
+  Apply settings
+</button>
+然后使用它们的值来设置三个元素的CSS属性
+在第一个元素中，我们基于输入框的值来设定字体大小。
+
+code/built_in_directives/app/ts/ng_style/ng_style.ts
+<div>
+  <span [ngStyle]="{color: 'red'}" [style.font-size.px]="fontSize">
+  red text
+  </span>
+</div>
+注意，我们在某些情况下必须指定单位。例如，把font-size设置为12不是合法的CSS，必
+须指定一个单位，比如12px或者1.2em。Angular提供了一个便捷语法用来指定单位：这里我们使
+用的格式是[style.fontSize.px]。
+
+后缀.px表明我们设置font-size属性值以像素为单位。你完全可以把它替换为[style.
+font-size.em]，以相对长度为单位来表示字体大小；还可以使用[style.fontSize.%]，以百分
+比为单位。
+另外两个元素使用#colorinput的值来设置文字颜色和背景颜色。
+
+code/built_in_directives/app/ts/ng_style/ng_style.ts
+<h4 class="ui horizontal divider header">
+  ngStyle with object property from variable
+</h4>
+<div>
+  <span [ngStyle]="{color: color}">{{ color }} text</span>
+</div>
+<h4 class="ui horizontal divider header">
+  style from variable
+</h4>
+<div [style.background-color]="color" style="color: white;">
+  {{ color }} background
+</div>
+
+这样，当我们点击Apply settings按钮时，就会调用方法来设置新的值。
+
+code/built_in_directives/app/ts/ng_style/ng_style.ts
+apply(color: string, fontSize: number) {
+  this.color = color;
+  this.fontSize = fontSize;
+}
+与此同时，文本颜色和字体大小都通过NgStyle指令作用在元素上了。
+
+### ngClass
+在HTML模板中用ngClass属性来表示，让你能动态设置和改变一个给定DOM
+元素的CSS类。
+
+第一种方式是传入一个对象字面量。该对象希望以类名作为键，而值应该是
+一个用来表明是否应该应用该类的真/假值。
+
+假设我们有一个叫作bordered的CSS类，用来给元素添加一个黑色虚线边框。
+.bordered {
+  border: 1px dashed black;
+  background-color: #eee;
+}
+我们来添加两个div元素：一个一直都有bordered类（因此一直有边框），而另一个永远都
+不会有。
+code/built_in_directives/app/ts/ng_class/ng_class.ts
+<div [ngClass]="{bordered: false}">This is never bordered</div>
+<div [ngClass]="{bordered: true}">This is always bordered</div>
 
 
 
+<div style="font-size: 16px;
+      text-indent: 2em;
+     height: 250px; ">
+    <p class="right20" style="text-align: right;
+      margin-right: 20%;">编号：</p>
+    <div style="float: left;">
+      <p>借款人：$!borrowUserName </p>
+      <p>营业执照号：$!borrowCardNo</p>
+      <p>地址：</p>
+      <p>电话：$!borrowUserMobile</p>
+      <p>出借人：$!investUserName</p>
+      <p>营业执照号：$!investUser.idNumber </p>
+      <p>地址： </p>
+      <p>法定代表人： </p>
+    </div>
+    <div style="float: right;
+      margin-right: 256px;">
+      <p>（以下简称甲方）</p>
+      <p style="margin-top: 76px;">（以下简称乙方）</p>
+    </div>
+  </div>
+
+
+<div style="font-size: 16px;
+      text-indent: 2em;
+     height: 250px; ">
+    <p class="right20" style="text-align: right;
+      margin-right: 20%;">编号：</p>
+    <div>
+      <p>借款人：$!borrowUserName<span style="margin-right: 20%; float: right;">（以下简称甲方）</span> </p>
+      <p>营业执照号：$!borrowCardNo</p>
+      <p>地址：</p>
+      <p>电话：$!borrowUserMobile</p>
+      <p>出借人：$!investUserName <span style="margin-right: 20%; float: right;">（以下简称乙方）</span></p>
+      <p>营业执照号：$!investUser.idNumber </p>
+      <p>地址： </p>
+      <p>法定代表人： </p>
+    </div>
+  </div>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+18200700885
