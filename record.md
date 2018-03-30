@@ -437,48 +437,141 @@ code/built_in_directives/app/ts/ng_class/ng_class.ts
 <div [ngClass]="{bordered: false}">This is never bordered</div>
 <div [ngClass]="{bordered: true}">This is always bordered</div>
 
+使用ngClass指令来动态分配类会有用得多。
+为了动态使用它，我们添加了一个变量作为对象的值：
+
+code/built_in_directives/app/ts/ng_class/ng_class.ts
+<div [ngClass]="{bordered: isBordered}">
+Using object literal. Border {{ isBordered ? "ON" : "OFF" }}
+</div>
+
+或者在组件中定义该对象：
+
+code/built_in_directives/app/ts/ng_class/ng_class.ts
+export class NgClassSampleApp {
+isBordered: boolean;
+classesObj: Object;
+classList: string[];
+
+并直接使用它：
+code/built_in_directives/app/ts/ng_class/ng_class.ts
+<div [ngClass]="classesObj">
+Using object var. Border {{ classesObj.bordered ? "ON" : "OFF" }}
+</div>
+
+们也可以使用一个类名列表来指定哪些类名会被添加到元素上。为此，我们可以传入一个
+数组型字面量：
+
+code/built_in_directives/app/ts/ng_class/ng_class.ts
+<div class="base" [ngClass]="['blue', 'round']">
+  This will always have a blue background and
+round corners
+</div>
+
+或者在组件中声明一个数组对象：
+  this.classList = ['blue', 'round'];
+并把它传进来：
+
+code/built_in_directives/app/ts/ng_class/ng_class.ts
+<div class="base" [ngClass]="classList">
+  This is {{ classList.indexOf('blue') > -1 ? "" : "NOT" }} blue
+  and {{ classList.indexOf('round') > -1 ? "" : "NOT" }} round
+</div>
+
+在上个例子中，[ngClass]分配的类名和通过HTML的class属性分配的已存在类名都是生
+效的。
+
+最后添加到元素的类总会是HTML属性class中的类和[ngClass]指令求值结果得到的类的
+集合。
+
+在这个例子中：
+code/built_in_directives/app/ts/ng_class/ng_class.ts
+<div class="base" [ngClass]="['blue', 'round']">
+  This will always have a blue background and round corners
+</div>
+元素有全部的三个类：HTML的class属性提供的base，以及通过[ngClass]分配的blue和round
 
 
-<div style="font-size: 16px;
-      text-indent: 2em;
-     height: 250px; ">
-    <p class="right20" style="text-align: right;
-      margin-right: 20%;">编号：</p>
-    <div style="float: left;">
-      <p>借款人：$!borrowUserName </p>
-      <p>营业执照号：$!borrowCardNo</p>
-      <p>地址：</p>
-      <p>电话：$!borrowUserMobile</p>
-      <p>出借人：$!investUserName</p>
-      <p>营业执照号：$!investUser.idNumber </p>
-      <p>地址： </p>
-      <p>法定代表人： </p>
-    </div>
-    <div style="float: right;
-      margin-right: 256px;">
-      <p>（以下简称甲方）</p>
-      <p style="margin-top: 76px;">（以下简称乙方）</p>
-    </div>
-  </div>
+### ngFor
+重复一个给定的DOM元素（或一组DOM元素），每次重复都会从数组中取一个不同的值。
+语法是*ngFor="let item of items"。
+<tr *ngFor="let p of item.people">
+  <td>{{ p.name }}</td>
+  <td>{{ p.age }}</td>
+</tr>
+
+获取每一项的索引
+可以在ngFor指令的值中插入语法let idx = index并用分号分隔开
+<div class="ui list" *ngFor="let c of cities; let num = index">
+  <div class="item">{{ num+1 }} - {{ c }}</div>
+</div>
+
+### ngNonBindable
+让angular不要编译或者绑定页面中的某个特殊部分时使用
+<span class="pre" ngNonBindable>&larr; This is what {{ content }} rendered </span>
+
+## angular中的表单
+表单控件（FormControl）封装了表单中的输入，并提供了一些可供操纵的对象
+验证器（validator）让我们能以自己喜欢的任何方式验证表单输入
+观察者（observer）让我们能够监听表单的变化，并作出相应的回应
+
+###FormControl 和FormGroup
+FormControl和FormGroup是Angular中两个最基础的表单对象
+
+FormControl代表单一的输入字段，它是Angular表单中的最小单元。
+FormControl封装了这些字段的值和状态，比如是否有效、是否脏（被修改过）或是否有错
+误等。
+let nameControl = new FormControl("Nate");
+let name = nameControl.value; // -> Nate
+
+常将一个类（本例中为FormControl）以属性形式（本例中为formControl）
+附加在DOM上
+<input type="text" [formControl]="name" />
 
 
-<div style="font-size: 16px;
-      text-indent: 2em;
-     height: 250px; ">
-    <p class="right20" style="text-align: right;
-      margin-right: 20%;">编号：</p>
-    <div>
-      <p>借款人：$!borrowUserName<span style="margin-right: 20%; float: right;">（以下简称甲方）</span> </p>
-      <p>营业执照号：$!borrowCardNo</p>
-      <p>地址：</p>
-      <p>电话：$!borrowUserMobile</p>
-      <p>出借人：$!investUserName <span style="margin-right: 20%; float: right;">（以下简称乙方）</span></p>
-      <p>营业执照号：$!investUser.idNumber </p>
-      <p>地址： </p>
-      <p>法定代表人： </p>
-    </div>
-  </div>
+而FormGroup则可以为一组FormControl提供总包接口，来管理多个FormControl
+创建方式：
+let personInfo = new FormGroup({
+  firstName: new FormControl("Nate"),
+  lastName: new FormControl("Murray"),
+  zip: new FormControl("90210")
+})
+
+### 加载FormsModule
+使用FormsModule以及使用ReactiveFormsModule，同时导入它们
+import {FormsModule,ReactiveFormsModule} from '@angular/forms';
+
+imports: [BrowserModule,FormsModule,ReactiveFormsModule],
 
 
 
-18200700885
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
