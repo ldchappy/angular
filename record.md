@@ -130,6 +130,9 @@ bootstrap指向谁为顶层组件
 ###新建组件
 ng generate component xxx
 
+### 当有两个module时，新建组件
+ng generate component hello --module=app.module
+
 ### 这是？？
 declare var jQuery: any;
 
