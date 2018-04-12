@@ -238,6 +238,171 @@ import { Component, OnInit, Input } from '@angular/core';
 
 ### 子组件添加带有 @Input() 装饰器的 hero 属性。
 @Input() hero: Hero;
+----------第5部分 end--------
+----------第6部分 start--------
+###为什么需要服务
+组件不应该直接获取或保存数据，它们不应该了解是否在展示假数据。 它们应该聚焦于展示数据，而把数据访问的职责委托给某个服务。
+
+### 本例的服务
+服务是在多个“互相不知道”的类之间共享信息的好办法。 你将创建一个 MessageService，并且把它注入到两个地方：
+
+HeroService 中，它会使用该服务发送消息。
+
+MessagesComponent 中，它会显示其中的消息。
+
+### 创建 HeroService
+ng generate service hero
+
+### @Injectable() 服务
+@Injectable() 装饰器告诉 Angular 这个服务本身可能拥有被注入的依赖。 
+**总是给服务加上这个装饰器都是一种好的做法。
+
+### 获取英雄数据
+HeroService 可以从任何地方获取数据：Web 服务、本地存储（LocalStorage）或一个模拟的数据源。
+
+#### 这里的实现仍然会提供模拟的英雄列表。
+导入 Hero 和 HEROES。
+import { Hero } from './hero';
+import { HEROES } from './mock-heroes';
+
+### 提供（provide） HeroService
+在要求 Angular 把 HeroService 注入到 HeroesComponent 之前，你必须先把这个服务提供给依赖注入系统。
+
+可以通过 --module=app 选项让 CLI 自动把它提供给 AppModule。
+ng generate service hero --module=app
+
+### 也可手动
+打开 AppModule类，导入HeroService，并把它加入 @NgModule.providers 数组中。
+providers: [
+    HeroService,
+    /* . . . */
+  ],
+
+** providers 数组会告诉 Angular 创建 HeroService 的单一、共享的实例，并且把它注入到任何请求注入它的类中。
+
+### 修改 HeroesComponent
+删除 HEROES 导入,转而导入 HeroService。
+import { HeroService } from '../hero.service';
+
+把 heroes 属性的定义改为一句简单的声明
+heroes: Hero[];
+
+### 注入 HeroService
+往构造函数中添加一个私有的 heroService，其类型为 HeroService。
+
+constructor(private heroService:HeroService) { }
+
+作用：
+这个参数同时做了两件事：1. 声明了一个私有 heroService 属性，2. 把它标记为一个 HeroService 的注入点。
+
+当 Angular 创建 HeroesComponent 时，依赖注入系统就会把这个 heroService 参数设置为 HeroService 的单例对象。
+
+### 添加 getHeroes()
+创建一个函数，以从服务中获取这些英雄数据。
+
+### 在 ngOnInit 中调用它
+让构造函数保持简单，只做初始化操作，比如把构造函数的参数赋值给属性。 
+
+**应该改为在 ngOnInit 生命周期钩子中调用 getHeroes()，并且等 Angular 构造出 HeroesComponent 的实例之后，找个恰当的时机调用 ngOnInit。
+
+### 可观察（Observable）的数据
+HeroService.getHeroes() 的函数签名是同步的，它所隐含的假设是 HeroService 总是能同步获取英雄列表数据。 而 HeroesComponent 也同样假设能同步取到 getHeroes() 的结果。
+
+** -->上面的理论这在真实的应用中几乎是不可能的。
+
+** so：HeroService 必须等服务器给出相应， 而 getHeroes() 不能立即返回英雄数据， 浏览器也不会在该服务等待期间停止响应。
+
+HeroService.getHeroes() 必须具有某种形式的异步函数签名。
+
+### 可观察对象版本的 HeroService
+Observable 是 RxJS库中的一个关键类。
+
+#### 在稍后的 HTTP 教程中，你就会知道 Angular HttpClient 的方法会返回 RxJS 的 Observable。 这节课，你将使用 RxJS 的 of() 函数来模拟从服务器返回数据。
+
+在hero.service.ts中
+导入：
+import {Observable} from 'rxjs';
+
+  getHeroes():Observable<Hero[]> {
+    return Observable.of(HEROES);
+  }
+
+### 显示消息
+1.添加一个 MessagesComponent，它在屏幕的底部显示应用中的消息。
+
+2.创建一个可注入的、全应用级别的 MessageService，用于发送要显示的消息。
+
+3.把 MessageService 注入到 HeroService 中。
+
+4.当 HeroService 成功获取了英雄数据时显示一条消息。
+
+### 使用 CLI 创建 MessagesComponent。
+ng generate component messages
+
+### 打开 MessageService，并把它的内容改成这样
+~~~
+@Injectable()
+export class MessageService {
+
+
+  messages:string[] = [];
+
+  add(message:string){
+    this.message.push(message);
+  }
+
+  clear(){
+    this.message = [];
+  }
+  constructor() { }
+
+}
+~~~
+该服务对外暴露了它的 messages 缓存，以及两个方法：add() 方法往缓存中添加一条消息，clear() 方法用于清空缓存
+
+### 把它注入到 HeroService 中
+重新打开 HeroService，并且导入 MessageService。
+
+import { MessageService } from './message.service';
+
+### 从 HeroService 中发送一条消息
+~~~
+getHeroes():Observable<Hero[]> {
+    this.messageService.add('HeroService:fetched');
+    return Observable.of(HEROES);
+  }
+~~~
+
+### 显示从 HeroService 中发出的消息
+1.打开 MessagesComponent，并且导入 MessageService。
+
+import { MessageService } from '../message.service';
+
+2.修改构造函数，添加一个 public 的 messageService 属性。这个 messageService 属性必须是公共属性，因为你将会在模板中绑定到它。
+
+constructor(public messageService: MessageService) {}
+
+### 绑定到 MessageService
+MessagesComponent.html 的模板改成这样:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
